@@ -14,7 +14,8 @@ only, one listening port.
 It does not compute anything itself and it never calls the REST API. The
 numbers are the ones WatchFor serves: monitor status, incident-based uptime,
 latest checks, response times, certificate and domain expiry, heartbeats,
-hosts, fleet health and open incidents.
+hosts, fleet health and open incidents. A ready-made
+[Grafana dashboard](#grafana-dashboard) comes with it.
 
 - [Do you need it?](#do-you-need-it)
 - [Quick start](#quick-start): [binary](#binary), [Docker](#docker),
@@ -368,9 +369,29 @@ increase(watchfor_exporter_poll_errors_total[1h]) > 0
 
 ### Grafana dashboard
 
-A Grafana dashboard is being prepared and will be published in this
-repository as `dashboards/watchfor-overview.json`. It is meant to work both
-with direct scraping and through the exporter.
+[`dashboards/watchfor-overview.json`](dashboards/watchfor-overview.json) is a
+ready-made dashboard for these metrics. It works with direct scraping and
+through the exporter (with or without the `organization` label).
+
+![WatchFor Overview dashboard in Grafana](docs/dashboard.png)
+
+- **Fleet at a glance:** health score, monitors by status, open incidents,
+  hosts, active maintenance and the age of the data, with trends over time.
+- **Status:** a "needs attention" table and a status timeline per monitor.
+- **Uptime and SLO:** 24 h, 7 d and 30 d uptime per monitor against an SLO
+  target you pick (99 % to 99.99 %), with the error budget left.
+- **Performance:** check duration over time and a 24-hour table with
+  failures, success rate and whether each monitor is checking on schedule.
+- **Certificates, domains and heartbeats:** days until expiry (red under 7,
+  amber under 30) and time since the last heartbeat.
+- **Hosts:** inventory, state and an availability timeline.
+- Filters by organization, monitor type, tag and monitor; every panel has a
+  hover description; outages and maintenance appear as annotations; rows
+  link straight to the monitor or host in WatchFor.
+
+Import it in Grafana under **Dashboards → New → Import** and pick your
+Prometheus data source. The [Docker Compose example](#docker-compose-with-prometheus-and-grafana)
+loads it automatically. Tested on Grafana 11.6, 12.2 and 13.2.
 
 ## Prometheus configuration
 

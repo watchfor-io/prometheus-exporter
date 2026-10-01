@@ -7,6 +7,7 @@
 # Exporter:   http://localhost:10056/metrics
 # Prometheus: http://localhost:9090
 # Grafana:    http://localhost:3000  (admin / admin, change it on first login)
+#             Dashboards > WatchFor > WatchFor Overview is provisioned from ../dashboards
 
 services:
   watchfor-exporter:
@@ -39,6 +40,8 @@ services:
     image: grafana/grafana:13.2.3
     volumes:
       - ./compose/grafana-datasource.yml:/etc/grafana/provisioning/datasources/watchfor.yml:ro
+      - ./compose/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/watchfor.yml:ro
+      - ../dashboards:/etc/grafana/dashboards/watchfor:ro
       - grafana-data:/var/lib/grafana
     ports:
       - "3000:3000"

@@ -1,0 +1,5283 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "Prometheus that scrapes the WatchFor metrics endpoint or exporter",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "state-timeline",
+      "name": "State timeline",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "id": null,
+  "uid": "watchfor-overview",
+  "title": "WatchFor Overview",
+  "description": "WatchFor synthetic monitoring, uptime/SLO, incidents, expiry and host agents from the WatchFor Prometheus endpoint (native or exporter).",
+  "tags": [
+    "watchfor",
+    "uptime",
+    "synthetic-monitoring"
+  ],
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
+  "liveNow": false,
+  "refresh": "1m",
+  "schemaVersion": 41,
+  "version": 1,
+  "weekStart": "",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h"
+    ]
+  },
+  "timezone": "browser",
+  "links": [
+    {
+      "title": "Open WatchFor",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": true,
+      "url": "https://watchfor.io/dashboard",
+      "tooltip": "Your WatchFor dashboard",
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": false,
+      "tags": []
+    },
+    {
+      "title": "API docs",
+      "type": "link",
+      "icon": "doc",
+      "targetBlank": true,
+      "url": "https://watchfor.io/docs/api/prometheus",
+      "tooltip": "Metrics endpoint: every metric, limits, scrape config and alert examples",
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": false,
+      "tags": []
+    },
+    {
+      "title": "API keys",
+      "type": "link",
+      "icon": "info",
+      "targetBlank": true,
+      "url": "https://watchfor.io/docs/api/authentication",
+      "tooltip": "Create an API key for scraping",
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": false,
+      "tags": []
+    },
+    {
+      "title": "Exporter",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": true,
+      "url": "https://github.com/watchfor-io/prometheus-exporter",
+      "tooltip": "Open-source exporter: one in-cluster target, adds the organization label",
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": false,
+      "tags": []
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "red",
+        "name": "Outages",
+        "expr": "(1 - max by (organization, monitor_id) (watchfor_monitor_up{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"} > 0",
+        "step": "60s",
+        "titleFormat": "Down: {{name}}",
+        "textFormat": "Confirmed critical incident",
+        "tagKeys": "type",
+        "useValueForTime": false
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "blue",
+        "name": "Maintenance",
+        "expr": "sum(watchfor_maintenance_windows_active{organization=~\"$organization|\"}) > 0",
+        "step": "60s",
+        "titleFormat": "Maintenance window",
+        "textFormat": "{{value}} maintenance window(s) active",
+        "useValueForTime": false
+      }
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "datasource",
+        "label": "Data source",
+        "query": "prometheus",
+        "description": "Prometheus server that scrapes WatchFor (native endpoint or exporter).",
+        "current": {
+          "selected": false,
+          "text": "${DS_PROMETHEUS}",
+          "value": "${DS_PROMETHEUS}"
+        },
+        "options": [],
+        "refresh": 1,
+        "regex": "",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "skipUrlSync": false
+      },
+      {
+        "type": "query",
+        "name": "organization",
+        "label": "Organization",
+        "description": "WatchFor organization (slug). With the native endpoint there is one per API key; the exporter can serve several.",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "query": {
+          "qryType": 1,
+          "query": "label_values(watchfor_organization_info, organization)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(watchfor_organization_info, organization)",
+        "regex": "",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "type": "query",
+        "name": "type",
+        "label": "Type",
+        "description": "Monitor type (http, api, ssl, rdap, heartbeat, playwright, dns, …).",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "query": {
+          "qryType": 1,
+          "query": "label_values(watchfor_monitor_info{organization=~\"$organization|\"}, type)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(watchfor_monitor_info{organization=~\"$organization|\"}, type)",
+        "regex": "",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "type": "query",
+        "name": "tag",
+        "label": "Tag",
+        "description": "Monitor tag. Monitors carry a comma-joined tags label; a monitor matches if any of its tags is selected.",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "query": {
+          "qryType": 1,
+          "query": "label_values(watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\"}, tags)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\"}, tags)",
+        "regex": "/([^,]+)/g",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "type": "query",
+        "name": "monitor",
+        "label": "Monitor",
+        "description": "One or more monitors by name.",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "query": {
+          "qryType": 1,
+          "query": "label_values(watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\"}, name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\"}, name)",
+        "regex": "",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "type": "custom",
+        "name": "slo",
+        "label": "SLO target",
+        "description": "Uptime objective used for the uptime colours, the error budget and SLO breach counts.",
+        "query": "99% : 99, 99.5% : 99.5, 99.9% : 99.9, 99.95% : 99.95, 99.99% : 99.99",
+        "multi": false,
+        "includeAll": false,
+        "current": {
+          "selected": true,
+          "text": "99.9%",
+          "value": "99.9"
+        },
+        "options": [
+          {
+            "selected": false,
+            "text": "99%",
+            "value": "99"
+          },
+          {
+            "selected": false,
+            "text": "99.5%",
+            "value": "99.5"
+          },
+          {
+            "selected": true,
+            "text": "99.9%",
+            "value": "99.9"
+          },
+          {
+            "selected": false,
+            "text": "99.95%",
+            "value": "99.95"
+          },
+          {
+            "selected": false,
+            "text": "99.99%",
+            "value": "99.99"
+          }
+        ],
+        "hide": 0,
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "gauge",
+      "title": "Fleet health",
+      "description": "WatchFor fleet health score (0–100), the same number as the dashboard hero and GET /v1/summary. Down monitors and offline hosts pull it down hardest, degraded ones a little. Red below 70, amber below 90. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "avg(watchfor_health_score{organization=~\"$organization|\"})",
+          "refId": "A",
+          "legendFormat": "Health",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "none",
+          "min": 0,
+          "max": 100,
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "minVizHeight": 75,
+        "minVizWidth": 75
+      },
+      "id": 1,
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Monitors by status",
+      "description": "How many monitors are in each effective status right now, with the trend over the selected time range. Up = no open critical incident; Degraded = an open warning incident; Down = a confirmed critical incident (a single failed check never counts); Paused = paused by a user; Unknown = no check result yet. Same rule as the WatchFor dashboard. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"up\"}) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Up",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"degraded\"}) or vector(0)",
+          "refId": "B",
+          "legendFormat": "Degraded",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"down\"}) or vector(0)",
+          "refId": "C",
+          "legendFormat": "Down",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"paused\"}) or vector(0)",
+          "refId": "D",
+          "legendFormat": "Paused",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"unknown\"}) or vector(0)",
+          "refId": "E",
+          "legendFormat": "Unknown",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#7B8394",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "E"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#A7AEBB",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 2,
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 7,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Open incidents",
+      "description": "Incidents open on monitors and hosts. Critical / Warning = firing and not yet acknowledged (somebody needs to look); Acknowledged = a teammate owns it, still open. Grey means zero. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_firing{organization=~\"$organization|\",severity=\"critical\"}) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Critical",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_firing{organization=~\"$organization|\",severity=\"warning\"}) or vector(0)",
+          "refId": "B",
+          "legendFormat": "Warning",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_acknowledged{organization=~\"$organization|\"}) or vector(0)",
+          "refId": "C",
+          "legendFormat": "Acknowledged",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "blue",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 3,
+      "gridPos": {
+        "x": 11,
+        "y": 0,
+        "w": 5,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Hosts",
+      "description": "Servers running the WatchFor host agent, by liveness of the agent push. Online = pushed recently; Stale = a few pushes missed; Offline = silent long enough to open a host incident; Never seen = installed token, agent never connected. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"online\"}) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Online",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"stale\"}) or vector(0)",
+          "refId": "B",
+          "legendFormat": "Stale",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"offline\"}) or vector(0)",
+          "refId": "C",
+          "legendFormat": "Offline",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"never\"}) or vector(0)",
+          "refId": "D",
+          "legendFormat": "Never seen",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "text",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#A7AEBB",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 4,
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Maintenance",
+      "description": "Maintenance windows in progress right now. Checks keep running, but alerts are muted and the time does not count as downtime. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_maintenance_windows_active{organization=~\"$organization|\"}) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Active",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "None",
+                  "color": "text",
+                  "index": 0
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 5,
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Data age",
+      "description": "Seconds since WatchFor computed the metrics body Prometheus last scraped (watchfor_scrape_generated_timestamp_seconds). The endpoint caches for 60 s, so up to ~2 minutes is normal with a 60 s scrape interval; amber from 3 minutes, red from 10 (scrape failing or rate-limited).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "time() - max(watchfor_scrape_generated_timestamp_seconds{organization=~\"$organization|\"})",
+          "refId": "A",
+          "legendFormat": "Data age",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 180
+              },
+              {
+                "color": "red",
+                "value": 600
+              }
+            ]
+          },
+          "unit": "s",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 6,
+      "gridPos": {
+        "x": 20,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "timeseries",
+      "title": "Monitors by status over time",
+      "description": "Stacked count of monitors per status over the selected range: the red and amber slices are the moments something was down or degraded. The red bands on every graph are confirmed outages (annotation \"Outages\"), blue bands are maintenance windows. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"up\"})",
+          "refId": "A",
+          "legendFormat": "Up",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"degraded\"})",
+          "refId": "B",
+          "legendFormat": "Degraded",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"down\"})",
+          "refId": "C",
+          "legendFormat": "Down",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"paused\"})",
+          "refId": "D",
+          "legendFormat": "Paused",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_monitors{organization=~\"$organization|\",status=\"unknown\"})",
+          "refId": "E",
+          "legendFormat": "Unknown",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0,
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 55,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "barAlignment": 0,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#7B8394"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "E"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#A7AEBB"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "id": 7,
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "timeseries",
+      "title": "Health score",
+      "description": "Fleet health score (0–100) over time. Dashed lines mark 70 (red below) and 90 (amber below). Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "avg(watchfor_health_score{organization=~\"$organization|\"})",
+          "refId": "A",
+          "legendFormat": "Health score",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "none",
+          "max": 100,
+          "decimals": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 2,
+            "fillOpacity": 18,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "barAlignment": 0,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "axisSoftMin": 50
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "id": 8,
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 6,
+        "h": 8
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "timeseries",
+      "title": "Open incidents over time",
+      "description": "Firing (critical, warning) and acknowledged incidents over the selected range, stacked. Organization-wide: counts every monitor of the selected organization(s); the Type, Tag and Monitor filters do not apply.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_firing{organization=~\"$organization|\",severity=\"critical\"})",
+          "refId": "A",
+          "legendFormat": "Critical",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_firing{organization=~\"$organization|\",severity=\"warning\"})",
+          "refId": "B",
+          "legendFormat": "Warning",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_incidents_acknowledged{organization=~\"$organization|\"})",
+          "refId": "C",
+          "legendFormat": "Acknowledged",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0,
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "barAlignment": 0,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "id": 9,
+      "gridPos": {
+        "x": 18,
+        "y": 6,
+        "w": 6,
+        "h": 8
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "Status",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 24,
+        "h": 1
+      },
+      "id": 10,
+      "description": "Per-monitor state. Filtered by Type, Tag and Monitor."
+    },
+    {
+      "type": "table",
+      "title": "Needs attention",
+      "description": "Monitors that are not Up right now — down first, then degraded, paused and unknown (no data yet). Incident = severity of the open incident. Last check = raw result of the most recent check (one failure alone is not an outage). Click a name to open the monitor in WatchFor. An empty table means every filtered monitor is up.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"}) != 2)) * on (organization, monitor_id) group_left (name, type, target) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_open_incident_severity{organization=~\"$organization|\"}) and on (organization, monitor_id) (max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"}) != 2)) * on (organization, monitor_id) group_left (name, type, target) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_last_check_success{organization=~\"$organization|\"}) and on (organization, monitor_id) (max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"}) != 2)) * on (organization, monitor_id) group_left (name, type, target) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "C",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((time() - max by (organization, monitor_id) (watchfor_monitor_last_check_timestamp_seconds{organization=~\"$organization|\"})) and on (organization, monitor_id) (max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"}) != 2)) * on (organization, monitor_id) group_left (name, type, target) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "D",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": false
+          },
+          "noValue": "Every filtered monitor is up"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Degraded",
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "Up",
+                        "color": "green",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Paused",
+                        "color": "#7B8394",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Unknown",
+                        "color": "#A7AEBB",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incident"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "None",
+                        "color": "text",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Warning",
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "Critical",
+                        "color": "red",
+                        "index": 2
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "noValue",
+                "value": "—"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last check"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Failed",
+                        "color": "red",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Passed",
+                        "color": "green",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "noValue",
+                "value": "—"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last check age"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 140
+              },
+              {
+                "id": "noValue",
+                "value": "—"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Target"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": "—"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "type": "Type",
+              "target": "Target",
+              "organization": "Organization",
+              "Value #A": "Status",
+              "Value #B": "Incident",
+              "Value #C": "Last check",
+              "Value #D": "Last check age"
+            },
+            "indexByName": {
+              "name": 0,
+              "type": 1,
+              "organization": 2,
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5,
+              "Value #D": 6,
+              "target": 7,
+              "monitor_id": 8
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 11,
+      "gridPos": {
+        "x": 0,
+        "y": 15,
+        "w": 24,
+        "h": 7
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "state-timeline",
+      "title": "Status timeline",
+      "description": "Effective status of every filtered monitor over the selected range: green up, amber degraded, red down (confirmed critical incident), grey paused or unknown. Hover a band for its exact span. With a large fleet, narrow it with the Type, Tag or Monitor filters.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "interval": "1m"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#A7AEBB"
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Down",
+                  "color": "red",
+                  "index": 0
+                },
+                "1": {
+                  "text": "Degraded",
+                  "color": "orange",
+                  "index": 1
+                },
+                "2": {
+                  "text": "Up",
+                  "color": "green",
+                  "index": 2
+                },
+                "3": {
+                  "text": "Paused",
+                  "color": "#7B8394",
+                  "index": 3
+                },
+                "4": {
+                  "text": "Unknown",
+                  "color": "#A7AEBB",
+                  "index": 4
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "fillOpacity": 85,
+            "lineWidth": 0,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "never",
+        "alignValue": "left",
+        "rowHeight": 0.8,
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none",
+          "hideZeros": false
+        },
+        "perPage": 0
+      },
+      "id": 12,
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 24,
+        "h": 14
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "Uptime & SLO",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 24,
+        "h": 1
+      },
+      "id": 13,
+      "description": "Incident-based uptime, identical to the WatchFor dashboard and SLA reports."
+    },
+    {
+      "type": "stat",
+      "title": "Average uptime · 30 days",
+      "description": "Mean 30-day uptime of the filtered monitors. Uptime is incident-based: only confirmed critical downtime counts, maintenance windows are excluded, and new monitors are measured from creation. Green when it meets the SLO target variable.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "avg((max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"})",
+          "refId": "A",
+          "legendFormat": "Average uptime",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(vector(0), \"band\", \"a_floor\", \"\", \"\") or label_replace(vector(2 * ($slo / 100) - 1), \"band\", \"b_warn\", \"\", \"\") or label_replace(vector(($slo / 100)), \"band\", \"c_slo\", \"\", \"\")",
+          "refId": "SLOCFG",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percentunit",
+          "decimals": 3
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "filter": {
+            "id": "byRefId",
+            "options": "SLOCFG"
+          },
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "Time",
+                "handlerKey": "__ignore"
+              },
+              {
+                "fieldName": "band",
+                "handlerKey": "field.name"
+              },
+              {
+                "fieldName": "Value",
+                "handlerKey": "field.value"
+              },
+              {
+                "fieldName": "Value #SLOCFG",
+                "handlerKey": "field.value"
+              }
+            ]
+          }
+        },
+        {
+          "id": "configFromData",
+          "options": {
+            "configRefId": "rowsToFields-SLOCFG",
+            "mappings": [
+              {
+                "fieldName": "a_floor",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "red"
+                  }
+                }
+              },
+              {
+                "fieldName": "b_warn",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "orange"
+                  }
+                }
+              },
+              {
+                "fieldName": "c_slo",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "green"
+                  }
+                }
+              }
+            ],
+            "applyTo": {
+              "id": "byFrameRefID",
+              "options": "A"
+            }
+          }
+        }
+      ],
+      "id": 14,
+      "gridPos": {
+        "x": 0,
+        "y": 37,
+        "w": 6,
+        "h": 4
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Meeting the SLO",
+      "description": "Filtered monitors whose 30-day uptime is at or above the SLO target selected at the top (the $slo variable).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count((max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"} >= ($slo / 100)) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Monitors",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 15,
+      "gridPos": {
+        "x": 6,
+        "y": 37,
+        "w": 6,
+        "h": 4
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Breaching the SLO",
+      "description": "Filtered monitors whose 30-day uptime is below the SLO target — their error budget is spent.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count((max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"} < ($slo / 100)) or vector(0)",
+          "refId": "A",
+          "legendFormat": "Monitors",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 16,
+      "gridPos": {
+        "x": 12,
+        "y": 37,
+        "w": 6,
+        "h": 4
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "stat",
+      "title": "Error budget · 30 days",
+      "description": "Downtime each monitor may have in 30 days and still meet the SLO target: (1 − SLO) × 30 days. Change the SLO variable to compare targets (99.9% = 43 min, 99.99% = 4 min 19 s).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(1 - ($slo / 100)) * 2592000",
+          "refId": "A",
+          "legendFormat": "Allowed downtime",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dtdurations",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "id": 17,
+      "gridPos": {
+        "x": 18,
+        "y": 37,
+        "w": 6,
+        "h": 4
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "table",
+      "title": "Uptime by monitor",
+      "description": "Uptime per monitor over 24 hours, 7 days and 30 days, worst first. Colours follow the SLO target variable: green at or above it, amber below it but within twice the error budget, red beyond that. Downtime = confirmed critical downtime in the last 30 days. Error budget left = share of the 30-day budget (1 − SLO) still unspent; 'Spent' means the monitor is out of SLO. Click a name to open the monitor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"24h\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"7d\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "C",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((1 - max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * 2592000) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "D",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"}) - ($slo / 100)) / (1 - ($slo / 100))) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "E",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(vector(0), \"band\", \"a_floor\", \"\", \"\") or label_replace(vector(2 * ($slo / 100) - 1), \"band\", \"b_warn\", \"\", \"\") or label_replace(vector(($slo / 100)), \"band\", \"c_slo\", \"\", \"\")",
+          "refId": "SLOCFG",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "—"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 150
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "24 hours"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 92
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "7 days"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 92
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "30 days"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 92
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Downtime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "None",
+                        "color": "text",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Error budget left"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.0001
+                    },
+                    {
+                      "color": "green",
+                      "value": 0.5
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": -1000000,
+                      "to": 0,
+                      "result": {
+                        "text": "Spent",
+                        "color": "red",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "basic",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "30 days",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "filter": {
+            "id": "byRefId",
+            "options": "SLOCFG"
+          },
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "Time",
+                "handlerKey": "__ignore"
+              },
+              {
+                "fieldName": "band",
+                "handlerKey": "field.name"
+              },
+              {
+                "fieldName": "Value",
+                "handlerKey": "field.value"
+              },
+              {
+                "fieldName": "Value #SLOCFG",
+                "handlerKey": "field.value"
+              }
+            ]
+          }
+        },
+        {
+          "id": "configFromData",
+          "options": {
+            "configRefId": "rowsToFields-SLOCFG",
+            "mappings": [
+              {
+                "fieldName": "a_floor",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "red"
+                  }
+                }
+              },
+              {
+                "fieldName": "b_warn",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "orange"
+                  }
+                }
+              },
+              {
+                "fieldName": "c_slo",
+                "handlerKey": "threshold1",
+                "handlerArguments": {
+                  "threshold": {
+                    "color": "green"
+                  }
+                }
+              }
+            ],
+            "applyTo": {
+              "id": "byRegexp",
+              "options": "^Value #[ABC]$"
+            }
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true,
+              "type": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "organization": "Organization",
+              "Value #A": "24 hours",
+              "Value #B": "7 days",
+              "Value #C": "30 days",
+              "Value #D": "Downtime",
+              "Value #E": "Error budget left"
+            },
+            "indexByName": {
+              "name": 0,
+              "organization": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "Value #D": 5,
+              "Value #E": 6,
+              "monitor_id": 7
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 18,
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 17,
+        "h": 12
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "bargauge",
+      "title": "Most downtime · 30 days",
+      "description": "The ten filtered monitors with the most confirmed critical downtime in the last 30 days. Amber under 30 minutes, red from 30 minutes. Empty means no downtime at all.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sort_desc(topk(10, ((1 - max by (organization, monitor_id) (watchfor_monitor_uptime_ratio{organization=~\"$organization|\",window=\"30d\"})) * 2592000) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"} > 0))",
+          "refId": "A",
+          "legendFormat": "{{name}}",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 1800
+              }
+            ]
+          },
+          "unit": "dtdurations",
+          "decimals": 0,
+          "min": 0,
+          "noValue": "No downtime in the last 30 days"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "horizontal",
+        "displayMode": "basic",
+        "valueMode": "color",
+        "namePlacement": "left",
+        "showUnfilled": true,
+        "sizing": "manual",
+        "minVizHeight": 24,
+        "maxVizHeight": 30,
+        "minVizWidth": 8,
+        "legend": {
+          "showLegend": false
+        }
+      },
+      "id": 19,
+      "gridPos": {
+        "x": 17,
+        "y": 41,
+        "w": 7,
+        "h": 12
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "Performance",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 53,
+        "w": 24,
+        "h": 1
+      },
+      "id": 20,
+      "description": "Check durations, failures and freshness. Filtered by Type, Tag and Monitor."
+    },
+    {
+      "type": "timeseries",
+      "title": "Check duration",
+      "description": "Check duration per monitor as a 15-minute moving average of the latest-check duration (logarithmic axis, so 30 ms DNS lookups and 10 s browser checks fit on one chart). Legend: mean, max and last over the range — click a name to isolate it, Ctrl/Cmd-click to add more. Heartbeat monitors have no duration.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(avg_over_time(max by (organization, monitor_id) (watchfor_monitor_last_check_duration_seconds{organization=~\"$organization|\"})[15m:1m])) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "fillOpacity": 6,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "barAlignment": 0,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "scaleDistribution": {
+              "type": "log",
+              "log": 10
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "sortBy": "Mean",
+          "sortDesc": true,
+          "width": 430
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "id": 21,
+      "gridPos": {
+        "x": 0,
+        "y": 54,
+        "w": 24,
+        "h": 11
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "table",
+      "title": "Check performance · 24 hours",
+      "description": "Per monitor: duration of the latest check, mean duration over 24 hours, checks run and failed in 24 hours (all locations), success rate, and how long ago the latest check ran. Freshness compares that age with the configured interval plus 2 minutes of cache and scrape lag: Late after 1.5×, Stale after 3× (heartbeats are evaluated every minute). Failed = failed checks in 24 hours as a bar scaled to the worst monitor, amber from 1, red from 50. Individual failures are normal noise (alerting uses confirmed incidents) — use this to spot flaky targets.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_last_check_duration_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_avg_duration_24h_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(sum by (organization, monitor_id) (watchfor_monitor_checks_24h{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "C",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(sum by (organization, monitor_id) (watchfor_monitor_checks_24h{organization=~\"$organization|\",result=\"failure\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "D",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(sum by (organization, monitor_id) (watchfor_monitor_checks_24h{organization=~\"$organization|\",result=\"success\"}) / sum by (organization, monitor_id) (watchfor_monitor_checks_24h{organization=~\"$organization|\"} > 0)) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "E",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(time() - max by (organization, monitor_id) (watchfor_monitor_last_check_timestamp_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "F",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((time() - max by (organization, monitor_id) (watchfor_monitor_last_check_timestamp_seconds{organization=~\"$organization|\"})) / (max by (organization, monitor_id) (watchfor_monitor_check_interval_seconds{organization=~\"$organization|\"}) + 120)) * on (organization, monitor_id) group_left (name, type) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "H",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "—"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 160
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean · 24h"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Checks"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "basic",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    },
+                    {
+                      "color": "red",
+                      "value": 50
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success rate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.95
+                    },
+                    {
+                      "color": "green",
+                      "value": 0.99
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last check"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.align",
+                "value": "right"
+              },
+              {
+                "id": "custom.width",
+                "value": 115
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Freshness"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": 0,
+                      "to": 1.5,
+                      "result": {
+                        "text": "On schedule",
+                        "color": "green",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": 1.5,
+                      "to": 3,
+                      "result": {
+                        "text": "Late",
+                        "color": "orange",
+                        "index": 1
+                      }
+                    }
+                  },
+                  {
+                    "type": "range",
+                    "options": {
+                      "from": 3,
+                      "to": null,
+                      "result": {
+                        "text": "Stale",
+                        "color": "red",
+                        "index": 2
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Failed",
+            "desc": true
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "type": "Type",
+              "organization": "Organization",
+              "Value #A": "Last duration",
+              "Value #B": "Mean · 24h",
+              "Value #C": "Checks",
+              "Value #D": "Failed",
+              "Value #E": "Success rate",
+              "Value #F": "Last check",
+              "Value #H": "Freshness"
+            },
+            "indexByName": {
+              "name": 0,
+              "type": 1,
+              "organization": 2,
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5,
+              "Value #D": 6,
+              "Value #E": 7,
+              "Value #F": 8,
+              "Value #H": 9,
+              "monitor_id": 10
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 22,
+      "gridPos": {
+        "x": 0,
+        "y": 65,
+        "w": 24,
+        "h": 11
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "Certificates, domains & heartbeats",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 76,
+        "w": 24,
+        "h": 1
+      },
+      "id": 23,
+      "description": "Expiry countdowns and cron check-ins. Filtered by Type, Tag and Monitor."
+    },
+    {
+      "type": "table",
+      "title": "TLS certificates",
+      "description": "Certificate notAfter for every SSL monitor, soonest first. Days left = (expiry − now) / 86 400. Red under 7 days, amber under 30. Click a name to open the monitor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_ssl_certificate_expiry_timestamp_seconds{organization=~\"$organization|\"}) * 1000) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((max by (organization, monitor_id) (watchfor_ssl_certificate_expiry_timestamp_seconds{organization=~\"$organization|\"}) - time()) / 86400) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "No SSL monitors in this selection"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Expires"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time:YYYY-MM-DD"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Days left"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 7
+                    },
+                    {
+                      "color": "green",
+                      "value": 30
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "custom.width",
+                "value": 96
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Days left",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true,
+              "type": true,
+              "organization": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "organization": "Organization",
+              "Value #A": "Expires",
+              "Value #B": "Days left"
+            },
+            "indexByName": {
+              "name": 0,
+              "Value #A": 1,
+              "Value #B": 2,
+              "monitor_id": 3
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 24,
+      "gridPos": {
+        "x": 0,
+        "y": 77,
+        "w": 7,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "table",
+      "title": "Domain registrations",
+      "description": "Registration expiry from RDAP for every domain monitor, soonest first. Days left = (expiry − now) / 86 400. Red under 7 days, amber under 30. Click a name to open the monitor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_domain_expiry_timestamp_seconds{organization=~\"$organization|\"}) * 1000) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "((max by (organization, monitor_id) (watchfor_domain_expiry_timestamp_seconds{organization=~\"$organization|\"}) - time()) / 86400) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "No domain monitors in this selection"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Expires"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time:YYYY-MM-DD"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Days left"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 7
+                    },
+                    {
+                      "color": "green",
+                      "value": 30
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "custom.width",
+                "value": 96
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Days left",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true,
+              "type": true,
+              "organization": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "organization": "Organization",
+              "Value #A": "Expires",
+              "Value #B": "Days left"
+            },
+            "indexByName": {
+              "name": 0,
+              "Value #A": 1,
+              "Value #B": 2,
+              "monitor_id": 3
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 25,
+      "gridPos": {
+        "x": 7,
+        "y": 77,
+        "w": 7,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "table",
+      "title": "Heartbeats",
+      "description": "Cron jobs and workers that ping WatchFor. Last ping = time since the last real check-in; Expected = the configured period. Status turns red once the grace period has passed without a ping (confirmed missed run).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(time() - max by (organization, monitor_id) (watchfor_heartbeat_last_ping_timestamp_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_check_interval_seconds{organization=~\"$organization|\"}) and on (organization, monitor_id) max by (organization, monitor_id) (watchfor_heartbeat_last_ping_timestamp_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, monitor_id) (watchfor_monitor_state{organization=~\"$organization|\"}) and on (organization, monitor_id) max by (organization, monitor_id) (watchfor_heartbeat_last_ping_timestamp_seconds{organization=~\"$organization|\"})) * on (organization, monitor_id) group_left (name) watchfor_monitor_info{organization=~\"$organization|\",type=~\"$type\",tags=~\"(.*,)?($tag)(,.*)?\",name=~\"$monitor\"}",
+          "refId": "C",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "No heartbeat monitors in this selection"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "monitor_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Monitor"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/monitors/${__data.fields.monitor_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last ping"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Expected"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Degraded",
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "Up",
+                        "color": "green",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Paused",
+                        "color": "#7B8394",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Unknown",
+                        "color": "#A7AEBB",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true,
+              "type": true,
+              "organization": true
+            },
+            "renameByName": {
+              "name": "Monitor",
+              "organization": "Organization",
+              "Value #A": "Last ping",
+              "Value #B": "Expected",
+              "Value #C": "Status"
+            },
+            "indexByName": {
+              "name": 0,
+              "Value #A": 1,
+              "Value #B": 2,
+              "Value #C": 3,
+              "monitor_id": 4
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 26,
+      "gridPos": {
+        "x": 14,
+        "y": 77,
+        "w": 10,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "Hosts",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 83,
+        "w": 24,
+        "h": 1
+      },
+      "id": 27,
+      "description": "Servers running the WatchFor host agent. Not affected by Type, Tag or Monitor."
+    },
+    {
+      "type": "piechart",
+      "title": "Hosts by state",
+      "description": "Share of hosts per agent liveness state: Online, Stale (missed a few pushes), Offline (host incident opened), Never seen (agent installed but never connected).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"online\"})",
+          "refId": "A",
+          "legendFormat": "Online",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"stale\"})",
+          "refId": "B",
+          "legendFormat": "Stale",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"offline\"})",
+          "refId": "C",
+          "legendFormat": "Offline",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(watchfor_hosts{organization=~\"$organization|\",state=\"never\"})",
+          "refId": "D",
+          "legendFormat": "Never seen",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#A7AEBB"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "pieType": "donut",
+        "displayLabels": [],
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "id": 28,
+      "gridPos": {
+        "x": 0,
+        "y": 84,
+        "w": 7,
+        "h": 8
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "table",
+      "title": "Host inventory",
+      "description": "Every host with its OS, CPU architecture and agent version. Status: Online when the agent pushed recently, otherwise Not reporting. Last seen = time since the last agent push (Never = the agent has not connected yet). Click a host to open it in WatchFor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, host_id) (watchfor_host_up{organization=~\"$organization|\"})) * on (organization, host_id) group_left (name, os, arch, agent_version) watchfor_host_info{organization=~\"$organization|\"}",
+          "refId": "A",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(time() - max by (organization, host_id) (watchfor_host_last_seen_timestamp_seconds{organization=~\"$organization|\"})) * on (organization, host_id) group_left (name, os, arch, agent_version) watchfor_host_info{organization=~\"$organization|\"}",
+          "refId": "B",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "empty",
+                "result": {
+                  "text": "—",
+                  "color": "text",
+                  "index": 0
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "noValue": "—"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true,
+                  "legend": true,
+                  "tooltip": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Host"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open host in WatchFor",
+                    "targetBlank": true,
+                    "url": "https://watchfor.io/dashboard/organization/hosts/${__data.fields.host_id}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 160
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Not reporting",
+                        "color": "red",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Online",
+                        "color": "green",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OS"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Arch"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Agent"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last seen"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Never",
+                        "color": "#A7AEBB",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 300
+                    },
+                    {
+                      "color": "red",
+                      "value": 900
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Organization"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "fields": "",
+          "countRows": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "job": true,
+              "instance": true
+            },
+            "renameByName": {
+              "name": "Host",
+              "os": "OS",
+              "arch": "Arch",
+              "agent_version": "Agent",
+              "organization": "Organization",
+              "Value #A": "Status",
+              "Value #B": "Last seen"
+            },
+            "indexByName": {
+              "name": 0,
+              "organization": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "os": 4,
+              "arch": 5,
+              "agent_version": 6,
+              "host_id": 7
+            },
+            "includeByName": {}
+          }
+        }
+      ],
+      "id": 29,
+      "gridPos": {
+        "x": 7,
+        "y": 84,
+        "w": 17,
+        "h": 8
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "state-timeline",
+      "title": "Host availability",
+      "description": "Agent liveness per host over the selected range: green online, red not reporting (stale, offline or never connected).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(max by (organization, host_id) (watchfor_host_up{organization=~\"$organization|\"})) * on (organization, host_id) group_left (name) watchfor_host_info{organization=~\"$organization|\"}",
+          "refId": "A",
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "interval": "1m"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#A7AEBB"
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Not reporting",
+                  "color": "red",
+                  "index": 0
+                },
+                "1": {
+                  "text": "Online",
+                  "color": "green",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "fillOpacity": 85,
+            "lineWidth": 0,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "never",
+        "alignValue": "left",
+        "rowHeight": 0.8,
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none",
+          "hideZeros": false
+        },
+        "perPage": 0
+      },
+      "id": 30,
+      "gridPos": {
+        "x": 0,
+        "y": 92,
+        "w": 24,
+        "h": 6
+      },
+      "pluginVersion": "11.6.0"
+    },
+    {
+      "type": "row",
+      "title": "About this dashboard",
+      "collapsed": true,
+      "panels": [
+        {
+          "type": "text",
+          "title": "About this dashboard",
+          "description": "How the data gets here and how to read it.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "mode": "markdown",
+            "content": "### WatchFor · Prometheus overview\n\nFleet health, monitor status, incident-based uptime against an SLO, check performance, certificate / domain expiry,\nheartbeats and host agents — from the WatchFor Prometheus endpoint. Every panel has an **ⓘ** with what it shows.\n\n**Two ways to scrape (both work with this dashboard)**\n\n| | Native endpoint | Open-source exporter |\n|---|---|---|\n| Target | `https://watchfor.io/api/v1/metrics` | `watchfor-io/prometheus-exporter` in your cluster |\n| Auth | `Authorization: Bearer wf_live_…` (API key, `read` scope) | the exporter holds the key(s), Prometheus needs none |\n| Labels | no `organization` label (one org per key) | adds `organization=\"<slug>\"` to every series, many orgs per exporter |\n\n```yaml\nscrape_configs:\n  - job_name: watchfor\n    scheme: https\n    metrics_path: /api/v1/metrics\n    scrape_interval: 60s          # the body is cached for 60 s; faster scrapes get the same data\n    authorization:\n      credentials: wf_live_xxxxxxxxxxxx\n    static_configs:\n      - targets: [\"watchfor.io\"]\n```\n\nOptional query parameters: `tag`, `type`, `monitor_id` (narrow the per-monitor series) and `include_hosts=false`.\nRequires the Pro plan or higher; the metrics bucket is 30 requests / minute per organization.\n\n**Reading it**\n\n* *Up / Down* follows confirmed incidents, exactly like the WatchFor dashboard — a single failed check never marks a monitor down.\n* *Uptime* is incident-based (confirmed critical downtime, maintenance excluded), the same number as SLA reports.\n* The **SLO target** variable recolours the uptime cells and recomputes the error budget.\n* Per-object series carry only `monitor_id` / `host_id`; names, types, targets and tags come from the `*_info` series via\n  `* on(monitor_id) group_left(name, type) watchfor_monitor_info`.\n* *Data age* is the age of the cached body plus your scrape interval; above a few minutes, check the scrape job.\n",
+            "code": {
+              "language": "plaintext",
+              "showLineNumbers": false,
+              "showMiniMap": false
+            }
+          },
+          "id": 900,
+          "gridPos": {
+            "x": 0,
+            "y": 99,
+            "w": 24,
+            "h": 19
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 98,
+        "w": 24,
+        "h": 1
+      },
+      "id": 31
+    }
+  ]
+}
