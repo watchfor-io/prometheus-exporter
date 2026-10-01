@@ -1,0 +1,50 @@
+# Exporter + Prometheus + Grafana on one machine, for trying things out.
+#
+#   cd examples
+#   export WATCHFOR_API_KEY=wf_live_...      # or put it in examples/.env
+#   docker compose up -d
+#
+# Exporter:   http://localhost:10056/metrics
+# Prometheus: http://localhost:9090
+# Grafana:    http://localhost:3000  (admin / admin, change it on first login)
+
+services:
+  watchfor-exporter:
+    image: ghcr.io/watchfor-io/prometheus-exporter:latest
+    # build: ..   # or build from this checkout
+    environment:
+      WATCHFOR_API_KEY: ${WATCHFOR_API_KEY:?set WATCHFOR_API_KEY to a WatchFor API key}
+      WATCHFOR_ORGANIZATION: ${WATCHFOR_ORGANIZATION:-default}
+    ports:
+      - "10056:10056"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.15.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=30d
+    volumes:
+      - ./compose/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on: [watchfor-exporter]
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:13.2.3
+    volumes:
+      - ./compose/grafana-datasource.yml:/etc/grafana/provisioning/datasources/watchfor.yml:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on: [prometheus]
+    restart: unless-stopped
+
+volumes:
+  prometheus-data:
+  grafana-data:

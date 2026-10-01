@@ -1,0 +1,12 @@
+# kubectl apply -k examples/k8s -n monitoring
+#
+# secret.yaml is deliberately not listed: create the Secret with
+# `kubectl create secret` (see secret.yaml) so a real key never sits in a
+# file, and so re-applying this directory never overwrites it with the
+# placeholder.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - configmap.yaml
+  - deployment.yaml
+  - servicemonitor.yaml

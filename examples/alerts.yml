@@ -1,0 +1,38 @@
+# Example alerting rules. Load with `rule_files: [alerts.yml]`.
+groups:
+  - name: watchfor
+    rules:
+      # Exporter path only: the exporter cannot read an organization's metrics.
+      - alert: WatchForExporterPollFailing
+        expr: watchfor_exporter_up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WatchFor exporter cannot poll {{ $labels.organization }}"
+          description: "See the exporter log and watchfor_exporter_poll_errors_total for the reason (auth, plan, rate_limited, http, network, parse)."
+
+      # A confirmed critical incident is open on the monitor. A single failed
+      # check does not do this; use watchfor_monitor_up, not
+      # watchfor_monitor_last_check_success, for paging.
+      - alert: WatchForMonitorDown
+        expr: |
+          (watchfor_monitor_up == 0)
+            * on (organization, monitor_id) group_left (name, type, target)
+          watchfor_monitor_info
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.name }} is down"
+          description: "{{ $labels.type }} monitor for {{ $labels.target }} in {{ $labels.organization }}."
+
+      - alert: WatchForCertificateExpiringSoon
+        expr: |
+          (watchfor_ssl_certificate_expiry_timestamp_seconds - time() < 14 * 86400)
+            * on (organization, monitor_id) group_left (name, target)
+          watchfor_monitor_info
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificate for {{ $labels.target }} expires in under 14 days"

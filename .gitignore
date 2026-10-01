@@ -1,0 +1,4 @@
+/watchfor-prometheus-exporter
+/dist/
+*.test
+*.out

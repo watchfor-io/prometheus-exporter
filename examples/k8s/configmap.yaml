@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: watchfor-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: watchfor-prometheus-exporter
+data:
+  config.yml: |
+    listen_address: ":10056"
+    interval: 60s
+    log:
+      format: json
+    targets:
+      - organization: acme
+        api_key_file: /etc/watchfor/keys/acme
+      # - organization: acme-staging
+      #   api_key_file: /etc/watchfor/keys/acme-staging
+      #   filters:
+      #     include_hosts: false

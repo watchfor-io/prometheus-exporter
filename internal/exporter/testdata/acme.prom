@@ -1,0 +1,135 @@
+# HELP watchfor_organization_info Organization metadata (slug, plan). Always 1.
+# TYPE watchfor_organization_info gauge
+watchfor_organization_info{organization="acme",plan="pro"} 1
+# HELP watchfor_monitors Monitors by effective status: down = a confirmed critical incident, degraded = a warning incident or an unconfirmed failure. Same rule as the dashboard.
+# TYPE watchfor_monitors gauge
+watchfor_monitors{status="up"} 3
+watchfor_monitors{status="degraded"} 0
+watchfor_monitors{status="down"} 1
+watchfor_monitors{status="paused"} 1
+watchfor_monitors{status="unknown"} 0
+# HELP watchfor_health_score Fleet health score 0-100, the same number as the dashboard and GET /v1/summary.
+# TYPE watchfor_health_score gauge
+watchfor_health_score 82
+# HELP watchfor_incidents_firing Firing (unacknowledged) incidents on monitors and hosts, by severity.
+# TYPE watchfor_incidents_firing gauge
+watchfor_incidents_firing{severity="critical"} 1
+watchfor_incidents_firing{severity="warning"} 0
+# HELP watchfor_incidents_acknowledged Acknowledged incidents that are still open.
+# TYPE watchfor_incidents_acknowledged gauge
+watchfor_incidents_acknowledged 0
+# HELP watchfor_maintenance_windows_active Maintenance windows in progress right now.
+# TYPE watchfor_maintenance_windows_active gauge
+watchfor_maintenance_windows_active 0
+# HELP watchfor_hosts Hosts (watchfor-agent) by liveness: online, stale, offline, never reported.
+# TYPE watchfor_hosts gauge
+watchfor_hosts{state="online"} 1
+watchfor_hosts{state="stale"} 0
+watchfor_hosts{state="offline"} 1
+watchfor_hosts{state="never"} 0
+# HELP watchfor_monitor_info Monitor metadata; join on monitor_id with group_left(name, type). Always 1.
+# TYPE watchfor_monitor_info gauge
+watchfor_monitor_info{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",name="acme.example — Homepage",type="http",target="https://acme.example/",tags="prod,web",strategy="roundrobin"} 1
+watchfor_monitor_info{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",name="API \"v2\" certificate",type="ssl",target="api.acme.example:443",tags="prod",strategy="all"} 1
+watchfor_monitor_info{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",name="Nightly backup",type="heartbeat",target="",tags="backup,cron",strategy="roundrobin"} 1
+watchfor_monitor_info{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",name="acme.example domain",type="rdap",target="acme.example",tags="",strategy="roundrobin"} 1
+watchfor_monitor_info{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",name="Legacy C:\\share",type="tcp",target="legacy.acme.example:445",tags="legacy",strategy="roundrobin"} 1
+# HELP watchfor_monitor_up 1 unless a confirmed critical incident is open on the monitor (degraded counts as up). Absent while paused. Alert on this, not on single checks.
+# TYPE watchfor_monitor_up gauge
+watchfor_monitor_up{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 1
+watchfor_monitor_up{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 1
+watchfor_monitor_up{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 0
+watchfor_monitor_up{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 1
+# HELP watchfor_monitor_state Effective state: 0 down, 1 degraded, 2 up, 3 paused, 4 unknown (no data yet).
+# TYPE watchfor_monitor_state gauge
+watchfor_monitor_state{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 2
+watchfor_monitor_state{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 2
+watchfor_monitor_state{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 0
+watchfor_monitor_state{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 2
+watchfor_monitor_state{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41"} 3
+# HELP watchfor_monitor_paused 1 when the monitor is paused.
+# TYPE watchfor_monitor_paused gauge
+watchfor_monitor_paused{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 0
+watchfor_monitor_paused{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 0
+watchfor_monitor_paused{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 0
+watchfor_monitor_paused{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 0
+watchfor_monitor_paused{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41"} 1
+# HELP watchfor_monitor_open_incident_severity Open incident on the monitor: 0 none, 1 warning, 2 critical.
+# TYPE watchfor_monitor_open_incident_severity gauge
+watchfor_monitor_open_incident_severity{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 0
+watchfor_monitor_open_incident_severity{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 0
+watchfor_monitor_open_incident_severity{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 2
+watchfor_monitor_open_incident_severity{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 0
+watchfor_monitor_open_incident_severity{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41"} 0
+# HELP watchfor_monitor_check_interval_seconds Configured check interval.
+# TYPE watchfor_monitor_check_interval_seconds gauge
+watchfor_monitor_check_interval_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 60
+watchfor_monitor_check_interval_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 3600
+watchfor_monitor_check_interval_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 86400
+watchfor_monitor_check_interval_seconds{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 86400
+watchfor_monitor_check_interval_seconds{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41"} 300
+# HELP watchfor_monitor_last_check_timestamp_seconds Unix time of the latest check (last 6 hours).
+# TYPE watchfor_monitor_last_check_timestamp_seconds gauge
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 1790870401
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 1790868612
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 1790856000
+# HELP watchfor_monitor_last_check_success Raw result of the latest check from one location (1 ok, 0 failed). One failure is not an outage; use watchfor_monitor_up for alerting.
+# TYPE watchfor_monitor_last_check_success gauge
+watchfor_monitor_last_check_success{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 1
+watchfor_monitor_last_check_success{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 1
+watchfor_monitor_last_check_success{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 0
+# HELP watchfor_monitor_last_check_duration_seconds Duration of the latest check.
+# TYPE watchfor_monitor_last_check_duration_seconds gauge
+watchfor_monitor_last_check_duration_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 0.183
+watchfor_monitor_last_check_duration_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 0.412
+# HELP watchfor_monitor_checks_24h Checks run in the last 24 hours, by result.
+# TYPE watchfor_monitor_checks_24h gauge
+watchfor_monitor_checks_24h{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",result="success"} 1438
+watchfor_monitor_checks_24h{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",result="failure"} 2
+watchfor_monitor_checks_24h{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",result="success"} 24
+watchfor_monitor_checks_24h{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",result="failure"} 0
+# HELP watchfor_monitor_avg_duration_24h_seconds Mean check duration over the last 24 hours.
+# TYPE watchfor_monitor_avg_duration_24h_seconds gauge
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd"} 0.201
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 0.398
+# HELP watchfor_monitor_uptime_ratio Uptime 0-1 over the window: confirmed critical downtime only, maintenance excluded, counted from creation or the last history reset. Identical to the dashboard.
+# TYPE watchfor_monitor_uptime_ratio gauge
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",window="7d"} 0.9996
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",window="30d"} 0.99987
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",window="30d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",window="24h"} 0.75
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",window="7d"} 0.9643
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",window="30d"} 0.9917
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",window="30d"} 1
+# HELP watchfor_ssl_certificate_expiry_timestamp_seconds SSL monitors: unix time the certificate expires.
+# TYPE watchfor_ssl_certificate_expiry_timestamp_seconds gauge
+watchfor_ssl_certificate_expiry_timestamp_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11"} 1796572800
+# HELP watchfor_domain_expiry_timestamp_seconds Domain monitors: unix time the registration expires.
+# TYPE watchfor_domain_expiry_timestamp_seconds gauge
+watchfor_domain_expiry_timestamp_seconds{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31"} 1825747200
+# HELP watchfor_heartbeat_last_ping_timestamp_seconds Heartbeat monitors: unix time of the last real check-in.
+# TYPE watchfor_heartbeat_last_ping_timestamp_seconds gauge
+watchfor_heartbeat_last_ping_timestamp_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21"} 1790769600
+# HELP watchfor_host_info Host metadata; join on host_id. Always 1.
+# TYPE watchfor_host_info gauge
+watchfor_host_info{host_id="h_01J9ZK3Q7W",name="db-1",os="linux",arch="arm64",agent_version="0.8.0"} 1
+watchfor_host_info{host_id="h_01J9ZK4R2X",name="build-runner",os="linux",arch="amd64",agent_version=""} 1
+# HELP watchfor_host_up 1 when the host's agent reported within its liveness window, 0 when stale, offline or never seen.
+# TYPE watchfor_host_up gauge
+watchfor_host_up{host_id="h_01J9ZK3Q7W"} 1
+watchfor_host_up{host_id="h_01J9ZK4R2X"} 0
+# HELP watchfor_host_last_seen_timestamp_seconds Unix time of the host agent's last push.
+# TYPE watchfor_host_last_seen_timestamp_seconds gauge
+watchfor_host_last_seen_timestamp_seconds{host_id="h_01J9ZK3Q7W"} 1790870395
+watchfor_host_last_seen_timestamp_seconds{host_id="h_01J9ZK4R2X"} 1790611200
+# HELP watchfor_scrape_generated_timestamp_seconds When this response was computed; responses are cached for 60 seconds.
+# TYPE watchfor_scrape_generated_timestamp_seconds gauge
+watchfor_scrape_generated_timestamp_seconds 1790870410
+# HELP watchfor_scrape_duration_seconds Server time spent computing this response.
+# TYPE watchfor_scrape_duration_seconds gauge
+watchfor_scrape_duration_seconds 0.047

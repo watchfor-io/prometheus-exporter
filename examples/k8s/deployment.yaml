@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watchfor-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: watchfor-prometheus-exporter
+spec:
+  # One replica is enough: every replica polls every organization, and the
+  # endpoint allows 30 requests per minute per organization.
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: watchfor-prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: watchfor-prometheus-exporter
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532 # the key files below are group-readable by this group
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: exporter
+          image: ghcr.io/watchfor-io/prometheus-exporter:0.1.0
+          args: ["--config.file=/etc/watchfor/config.yml"]
+          ports:
+            - name: metrics
+              containerPort: 10056
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            periodSeconds: 30
+          # Not ready until the first successful poll. The Service publishes
+          # not-ready addresses, so Prometheus still scrapes a pod whose polls
+          # fail and sees watchfor_exporter_up == 0 and the reason.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: metrics
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/watchfor/config.yml
+              subPath: config.yml
+              readOnly: true
+            - name: keys
+              mountPath: /etc/watchfor/keys
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: watchfor-prometheus-exporter
+        - name: keys
+          secret:
+            secretName: watchfor-api-keys
+            defaultMode: 0440
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: watchfor-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: watchfor-prometheus-exporter
+spec:
+  selector:
+    app.kubernetes.io/name: watchfor-prometheus-exporter
+  publishNotReadyAddresses: true
+  ports:
+    - name: metrics
+      port: 10056
+      targetPort: metrics

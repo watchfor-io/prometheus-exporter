@@ -1,0 +1,46 @@
+# watchfor-prometheus-exporter configuration.
+#
+#   watchfor-prometheus-exporter --config.file=config.yml
+#
+# Precedence, lowest to highest: built-in defaults, this file, environment
+# variables (WATCHFOR_EXPORTER_*), command-line flags.
+
+# Where /metrics, /healthz and /readyz are served.
+listen_address: ":10056"
+
+# How often each organization is polled. 60s is the default and the minimum:
+# the endpoint caches each organization's metrics for 60 seconds, so polling
+# faster would only fetch the same data again.
+interval: 60s
+
+# Timeout for one poll. Must be shorter than the interval.
+timeout: 30s
+
+log:
+  level: info   # debug, info, warn, error
+  format: text  # text, json
+
+# One entry per WatchFor organization. Each needs its own API key (a key with
+# the read scope is enough) and a unique organization label: it is added to
+# every series that organization returns.
+targets:
+  - organization: acme
+    # Read on every poll, so a rotated Kubernetes Secret takes effect without
+    # a restart. The file holds only the key; surrounding whitespace is ignored.
+    api_key_file: /run/secrets/watchfor-acme
+
+  - organization: acme-staging
+    api_key_file: /run/secrets/watchfor-acme-staging
+    # Filters narrow the per-monitor series on the server side. Organization
+    # totals (watchfor_monitors, watchfor_health_score, ...) always cover the
+    # whole organization. Each filter takes a list or a comma-separated string.
+    filters:
+      tag: [api, web]
+      type: http,ssl
+      # monitor_id: [0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd]
+      include_hosts: false   # drop the watchfor_host_* families
+
+  # A key inline works too, but keeps the secret in this file:
+  # - organization: globex
+  #   api_key: wf_live_...
+  #   base_url: https://watchfor.io   # the default

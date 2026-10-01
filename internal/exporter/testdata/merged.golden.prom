@@ -1,0 +1,178 @@
+# HELP watchfor_domain_expiry_timestamp_seconds Domain monitors: unix time the registration expires.
+# TYPE watchfor_domain_expiry_timestamp_seconds gauge
+watchfor_domain_expiry_timestamp_seconds{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 1.8257472e+09
+# HELP watchfor_health_score Fleet health score 0-100, the same number as the dashboard and GET /v1/summary.
+# TYPE watchfor_health_score gauge
+watchfor_health_score{organization="acme"} 82
+watchfor_health_score{organization="globex"} 95
+# HELP watchfor_heartbeat_last_ping_timestamp_seconds Heartbeat monitors: unix time of the last real check-in.
+# TYPE watchfor_heartbeat_last_ping_timestamp_seconds gauge
+watchfor_heartbeat_last_ping_timestamp_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 1.7907696e+09
+# HELP watchfor_host_info Host metadata; join on host_id. Always 1.
+# TYPE watchfor_host_info gauge
+watchfor_host_info{agent_version="",arch="amd64",host_id="h_01J9ZK4R2X",name="build-runner",organization="acme",os="linux"} 1
+watchfor_host_info{agent_version="0.8.0",arch="arm64",host_id="h_01J9ZK3Q7W",name="db-1",organization="acme",os="linux"} 1
+# HELP watchfor_host_last_seen_timestamp_seconds Unix time of the host agent's last push.
+# TYPE watchfor_host_last_seen_timestamp_seconds gauge
+watchfor_host_last_seen_timestamp_seconds{host_id="h_01J9ZK3Q7W",organization="acme"} 1.790870395e+09
+watchfor_host_last_seen_timestamp_seconds{host_id="h_01J9ZK4R2X",organization="acme"} 1.7906112e+09
+# HELP watchfor_host_up 1 when the host's agent reported within its liveness window, 0 when stale, offline or never seen.
+# TYPE watchfor_host_up gauge
+watchfor_host_up{host_id="h_01J9ZK3Q7W",organization="acme"} 1
+watchfor_host_up{host_id="h_01J9ZK4R2X",organization="acme"} 0
+# HELP watchfor_hosts Hosts (watchfor-agent) by liveness: online, stale, offline, never reported.
+# TYPE watchfor_hosts gauge
+watchfor_hosts{organization="acme",state="never"} 0
+watchfor_hosts{organization="acme",state="offline"} 1
+watchfor_hosts{organization="acme",state="online"} 1
+watchfor_hosts{organization="acme",state="stale"} 0
+# HELP watchfor_incidents_acknowledged Acknowledged incidents that are still open.
+# TYPE watchfor_incidents_acknowledged gauge
+watchfor_incidents_acknowledged{organization="acme"} 0
+watchfor_incidents_acknowledged{organization="globex"} 1
+# HELP watchfor_incidents_firing Firing (unacknowledged) incidents on monitors and hosts, by severity.
+# TYPE watchfor_incidents_firing gauge
+watchfor_incidents_firing{organization="acme",severity="critical"} 1
+watchfor_incidents_firing{organization="acme",severity="warning"} 0
+watchfor_incidents_firing{organization="globex",severity="critical"} 0
+watchfor_incidents_firing{organization="globex",severity="warning"} 1
+# HELP watchfor_maintenance_windows_active Maintenance windows in progress right now.
+# TYPE watchfor_maintenance_windows_active gauge
+watchfor_maintenance_windows_active{organization="acme"} 0
+watchfor_maintenance_windows_active{organization="globex"} 1
+# HELP watchfor_monitor_avg_duration_24h_seconds Mean check duration over the last 24 hours.
+# TYPE watchfor_monitor_avg_duration_24h_seconds gauge
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 0.201
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 0.398
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 6.204
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 0.024
+# HELP watchfor_monitor_check_interval_seconds Configured check interval.
+# TYPE watchfor_monitor_check_interval_seconds gauge
+watchfor_monitor_check_interval_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 60
+watchfor_monitor_check_interval_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 3600
+watchfor_monitor_check_interval_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 86400
+watchfor_monitor_check_interval_seconds{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 86400
+watchfor_monitor_check_interval_seconds{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",organization="acme"} 300
+watchfor_monitor_check_interval_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 300
+watchfor_monitor_check_interval_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 60
+# HELP watchfor_monitor_checks_24h Checks run in the last 24 hours, by result.
+# TYPE watchfor_monitor_checks_24h gauge
+watchfor_monitor_checks_24h{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme",result="failure"} 2
+watchfor_monitor_checks_24h{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme",result="success"} 1438
+watchfor_monitor_checks_24h{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme",result="failure"} 0
+watchfor_monitor_checks_24h{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme",result="success"} 24
+watchfor_monitor_checks_24h{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex",result="failure"} 2
+watchfor_monitor_checks_24h{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex",result="success"} 286
+watchfor_monitor_checks_24h{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex",result="failure"} 0
+watchfor_monitor_checks_24h{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex",result="success"} 1440
+# HELP watchfor_monitor_info Monitor metadata; join on monitor_id with group_left(name, type). Always 1.
+# TYPE watchfor_monitor_info gauge
+watchfor_monitor_info{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",name="acme.example — Homepage",organization="acme",strategy="roundrobin",tags="prod,web",target="https://acme.example/",type="http"} 1
+watchfor_monitor_info{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",name="API \"v2\" certificate",organization="acme",strategy="all",tags="prod",target="api.acme.example:443",type="ssl"} 1
+watchfor_monitor_info{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",name="Nightly backup",organization="acme",strategy="roundrobin",tags="backup,cron",target="",type="heartbeat"} 1
+watchfor_monitor_info{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",name="acme.example domain",organization="acme",strategy="roundrobin",tags="",target="acme.example",type="rdap"} 1
+watchfor_monitor_info{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",name="Legacy C:\\share",organization="acme",strategy="roundrobin",tags="legacy",target="legacy.acme.example:445",type="tcp"} 1
+watchfor_monitor_info{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",name="Checkout",organization="globex",strategy="roundrobin",tags="prod,shop",target="https://shop.globex.example/checkout",type="playwright"} 1
+watchfor_monitor_info{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",name="DNS",organization="globex",strategy="all",tags="prod",target="globex.example",type="dns"} 1
+# HELP watchfor_monitor_last_check_duration_seconds Duration of the latest check.
+# TYPE watchfor_monitor_last_check_duration_seconds gauge
+watchfor_monitor_last_check_duration_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 0.183
+watchfor_monitor_last_check_duration_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 0.412
+watchfor_monitor_last_check_duration_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 7.912
+watchfor_monitor_last_check_duration_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 0.021
+# HELP watchfor_monitor_last_check_success Raw result of the latest check from one location (1 ok, 0 failed). One failure is not an outage; use watchfor_monitor_up for alerting.
+# TYPE watchfor_monitor_last_check_success gauge
+watchfor_monitor_last_check_success{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 1
+watchfor_monitor_last_check_success{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 1
+watchfor_monitor_last_check_success{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 0
+watchfor_monitor_last_check_success{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 0
+watchfor_monitor_last_check_success{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 1
+# HELP watchfor_monitor_last_check_timestamp_seconds Unix time of the latest check (last 6 hours).
+# TYPE watchfor_monitor_last_check_timestamp_seconds gauge
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 1.790870401e+09
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 1.790868612e+09
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 1.790856e+09
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 1.79087028e+09
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 1.79087039e+09
+# HELP watchfor_monitor_open_incident_severity Open incident on the monitor: 0 none, 1 warning, 2 critical.
+# TYPE watchfor_monitor_open_incident_severity gauge
+watchfor_monitor_open_incident_severity{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 0
+watchfor_monitor_open_incident_severity{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 0
+watchfor_monitor_open_incident_severity{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 2
+watchfor_monitor_open_incident_severity{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 0
+watchfor_monitor_open_incident_severity{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",organization="acme"} 0
+watchfor_monitor_open_incident_severity{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 1
+watchfor_monitor_open_incident_severity{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 0
+# HELP watchfor_monitor_paused 1 when the monitor is paused.
+# TYPE watchfor_monitor_paused gauge
+watchfor_monitor_paused{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 0
+watchfor_monitor_paused{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 0
+watchfor_monitor_paused{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 0
+watchfor_monitor_paused{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 0
+watchfor_monitor_paused{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",organization="acme"} 1
+watchfor_monitor_paused{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 0
+watchfor_monitor_paused{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 0
+# HELP watchfor_monitor_state Effective state: 0 down, 1 degraded, 2 up, 3 paused, 4 unknown (no data yet).
+# TYPE watchfor_monitor_state gauge
+watchfor_monitor_state{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 2
+watchfor_monitor_state{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 2
+watchfor_monitor_state{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 0
+watchfor_monitor_state{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 2
+watchfor_monitor_state{monitor_id="9e4fa06b-3c5d-4e8f-9a0b-2c3d4e5f6a41",organization="acme"} 3
+watchfor_monitor_state{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 1
+watchfor_monitor_state{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 2
+# HELP watchfor_monitor_up 1 unless a confirmed critical incident is open on the monitor (degraded counts as up). Absent while paused. Alert on this, not on single checks.
+# TYPE watchfor_monitor_up gauge
+watchfor_monitor_up{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme"} 1
+watchfor_monitor_up{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 1
+watchfor_monitor_up{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme"} 0
+watchfor_monitor_up{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme"} 1
+watchfor_monitor_up{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex"} 1
+watchfor_monitor_up{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex"} 1
+# HELP watchfor_monitor_uptime_ratio Uptime 0-1 over the window: confirmed critical downtime only, maintenance excluded, counted from creation or the last history reset. Identical to the dashboard.
+# TYPE watchfor_monitor_uptime_ratio gauge
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme",window="30d"} 0.99987
+watchfor_monitor_uptime_ratio{monitor_id="0fe0d9ba-c062-48f5-a9ec-ead9a4076ebd",organization="acme",window="7d"} 0.9996
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme",window="30d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme",window="24h"} 0.75
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme",window="30d"} 0.9917
+watchfor_monitor_uptime_ratio{monitor_id="5c2d8e4f-1a3b-4c6d-9e8f-7a6b5c4d3e21",organization="acme",window="7d"} 0.9643
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme",window="30d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="7d3e9f5a-2b4c-4d7e-8f9a-1b2c3d4e5f31",organization="acme",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex",window="30d"} 0.99993
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",organization="globex",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex",window="30d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",organization="globex",window="7d"} 1
+# HELP watchfor_monitors Monitors by effective status: down = a confirmed critical incident, degraded = a warning incident or an unconfirmed failure. Same rule as the dashboard.
+# TYPE watchfor_monitors gauge
+watchfor_monitors{organization="acme",status="degraded"} 0
+watchfor_monitors{organization="acme",status="down"} 1
+watchfor_monitors{organization="acme",status="paused"} 1
+watchfor_monitors{organization="acme",status="unknown"} 0
+watchfor_monitors{organization="acme",status="up"} 3
+watchfor_monitors{organization="globex",status="degraded"} 1
+watchfor_monitors{organization="globex",status="down"} 0
+watchfor_monitors{organization="globex",status="paused"} 0
+watchfor_monitors{organization="globex",status="unknown"} 0
+watchfor_monitors{organization="globex",status="up"} 1
+# HELP watchfor_organization_info Organization metadata (slug, plan). Always 1.
+# TYPE watchfor_organization_info gauge
+watchfor_organization_info{exported_organization="acme",organization="acme",plan="pro"} 1
+watchfor_organization_info{exported_organization="globex-corp",organization="globex",plan="business"} 1
+# HELP watchfor_scrape_duration_seconds Server time spent computing this response.
+# TYPE watchfor_scrape_duration_seconds gauge
+watchfor_scrape_duration_seconds{organization="acme"} 0.047
+watchfor_scrape_duration_seconds{organization="globex"} 0.012
+# HELP watchfor_scrape_generated_timestamp_seconds When this response was computed; responses are cached for 60 seconds.
+# TYPE watchfor_scrape_generated_timestamp_seconds gauge
+watchfor_scrape_generated_timestamp_seconds{organization="acme"} 1.79087041e+09
+watchfor_scrape_generated_timestamp_seconds{organization="globex"} 1.790870398e+09
+# HELP watchfor_ssl_certificate_expiry_timestamp_seconds SSL monitors: unix time the certificate expires.
+# TYPE watchfor_ssl_certificate_expiry_timestamp_seconds gauge
+watchfor_ssl_certificate_expiry_timestamp_seconds{monitor_id="3b1f6c2e-8d7a-4e59-b1c4-2f9a0d6e7c11",organization="acme"} 1.7965728e+09

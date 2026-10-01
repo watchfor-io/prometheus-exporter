@@ -1,0 +1,83 @@
+# HELP watchfor_organization_info Organization metadata (slug, plan). Always 1.
+# TYPE watchfor_organization_info gauge
+watchfor_organization_info{organization="globex-corp",plan="business"} 1
+# HELP watchfor_monitors Monitors by effective status: down = a confirmed critical incident, degraded = a warning incident or an unconfirmed failure. Same rule as the dashboard.
+# TYPE watchfor_monitors gauge
+watchfor_monitors{status="up"} 1
+watchfor_monitors{status="degraded"} 1
+watchfor_monitors{status="down"} 0
+watchfor_monitors{status="paused"} 0
+watchfor_monitors{status="unknown"} 0
+# HELP watchfor_health_score Fleet health score 0-100, the same number as the dashboard and GET /v1/summary.
+# TYPE watchfor_health_score gauge
+watchfor_health_score 95
+# HELP watchfor_incidents_firing Firing (unacknowledged) incidents on monitors and hosts, by severity.
+# TYPE watchfor_incidents_firing gauge
+watchfor_incidents_firing{severity="critical"} 0
+watchfor_incidents_firing{severity="warning"} 1
+# HELP watchfor_incidents_acknowledged Acknowledged incidents that are still open.
+# TYPE watchfor_incidents_acknowledged gauge
+watchfor_incidents_acknowledged 1
+# HELP watchfor_maintenance_windows_active Maintenance windows in progress right now.
+# TYPE watchfor_maintenance_windows_active gauge
+watchfor_maintenance_windows_active 1
+# HELP watchfor_monitor_info Monitor metadata; join on monitor_id with group_left(name, type). Always 1.
+# TYPE watchfor_monitor_info gauge
+watchfor_monitor_info{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",name="Checkout",type="playwright",target="https://shop.globex.example/checkout",tags="prod,shop",strategy="roundrobin"} 1
+watchfor_monitor_info{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",name="DNS",type="dns",target="globex.example",tags="prod",strategy="all"} 1
+# HELP watchfor_monitor_up 1 unless a confirmed critical incident is open on the monitor (degraded counts as up). Absent while paused. Alert on this, not on single checks.
+# TYPE watchfor_monitor_up gauge
+watchfor_monitor_up{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 1
+watchfor_monitor_up{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 1
+# HELP watchfor_monitor_state Effective state: 0 down, 1 degraded, 2 up, 3 paused, 4 unknown (no data yet).
+# TYPE watchfor_monitor_state gauge
+watchfor_monitor_state{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 1
+watchfor_monitor_state{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 2
+# HELP watchfor_monitor_paused 1 when the monitor is paused.
+# TYPE watchfor_monitor_paused gauge
+watchfor_monitor_paused{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 0
+watchfor_monitor_paused{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 0
+# HELP watchfor_monitor_open_incident_severity Open incident on the monitor: 0 none, 1 warning, 2 critical.
+# TYPE watchfor_monitor_open_incident_severity gauge
+watchfor_monitor_open_incident_severity{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 1
+watchfor_monitor_open_incident_severity{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 0
+# HELP watchfor_monitor_check_interval_seconds Configured check interval.
+# TYPE watchfor_monitor_check_interval_seconds gauge
+watchfor_monitor_check_interval_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 300
+watchfor_monitor_check_interval_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 60
+# HELP watchfor_monitor_last_check_timestamp_seconds Unix time of the latest check (last 6 hours).
+# TYPE watchfor_monitor_last_check_timestamp_seconds gauge
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 1790870280
+watchfor_monitor_last_check_timestamp_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 1790870390
+# HELP watchfor_monitor_last_check_success Raw result of the latest check from one location (1 ok, 0 failed). One failure is not an outage; use watchfor_monitor_up for alerting.
+# TYPE watchfor_monitor_last_check_success gauge
+watchfor_monitor_last_check_success{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 0
+watchfor_monitor_last_check_success{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 1
+# HELP watchfor_monitor_last_check_duration_seconds Duration of the latest check.
+# TYPE watchfor_monitor_last_check_duration_seconds gauge
+watchfor_monitor_last_check_duration_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 7.912
+watchfor_monitor_last_check_duration_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 0.021
+# HELP watchfor_monitor_checks_24h Checks run in the last 24 hours, by result.
+# TYPE watchfor_monitor_checks_24h gauge
+watchfor_monitor_checks_24h{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",result="success"} 286
+watchfor_monitor_checks_24h{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",result="failure"} 2
+watchfor_monitor_checks_24h{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",result="success"} 1440
+watchfor_monitor_checks_24h{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",result="failure"} 0
+# HELP watchfor_monitor_avg_duration_24h_seconds Mean check duration over the last 24 hours.
+# TYPE watchfor_monitor_avg_duration_24h_seconds gauge
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51"} 6.204
+watchfor_monitor_avg_duration_24h_seconds{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61"} 0.024
+# HELP watchfor_monitor_uptime_ratio Uptime 0-1 over the window: confirmed critical downtime only, maintenance excluded, counted from creation or the last history reset. Identical to the dashboard.
+# TYPE watchfor_monitor_uptime_ratio gauge
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c51",window="30d"} 0.99993
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",window="24h"} 1
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",window="7d"} 1
+watchfor_monitor_uptime_ratio{monitor_id="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d61",window="30d"} 1
+# HELP watchfor_scrape_generated_timestamp_seconds When this response was computed; responses are cached for 60 seconds.
+# TYPE watchfor_scrape_generated_timestamp_seconds gauge
+watchfor_scrape_generated_timestamp_seconds 1790870398
+# HELP watchfor_scrape_duration_seconds Server time spent computing this response.
+# TYPE watchfor_scrape_duration_seconds gauge
+watchfor_scrape_duration_seconds 0.012

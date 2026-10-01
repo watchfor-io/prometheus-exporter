@@ -1,0 +1,55 @@
+version: 2
+project_name: watchfor-prometheus-exporter
+builds:
+  - main: ./cmd/watchfor-prometheus-exporter
+    binary: watchfor-prometheus-exporter
+    env: [CGO_ENABLED=0]
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: ["-s -w -X main.Version={{.Version}}"]
+    mod_timestamp: "{{ .CommitTimestamp }}"
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE, NOTICE, README.md, CHANGELOG.md, examples/config.example.yml]
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+changelog:
+  use: github
+  filters:
+    exclude: ["^docs:", "^test:", "^ci:"]
+release:
+  github:
+    owner: watchfor-io
+    name: prometheus-exporter
+  draft: false
+  name_template: "watchfor-prometheus-exporter {{ .Version }}"
+  header: |
+    ## Run
+
+    ```sh
+    docker run --rm -p 10056:10056 -e WATCHFOR_API_KEY=wf_live_... ghcr.io/watchfor-io/prometheus-exporter:{{ .Version }}
+    ```
+
+    Or download the archive for your platform below and run the binary. The
+    [README](https://github.com/watchfor-io/prometheus-exporter#readme) covers
+    configuration, Kubernetes and the Prometheus side.
+
+    ## Verify
+
+    ```sh
+    sha256sum --ignore-missing -c checksums.txt
+    gh attestation verify watchfor-prometheus-exporter_{{ .Version }}_linux_amd64.tar.gz --repo watchfor-io/prometheus-exporter
+    gh attestation verify oci://ghcr.io/watchfor-io/prometheus-exporter:{{ .Version }} --repo watchfor-io/prometheus-exporter
+    ```
+  footer: |
+    Linux, macOS and Windows on amd64 and arm64; static binaries,
+    `CGO_ENABLED=0 -trimpath`, built from the tag by GoReleaser. The container
+    image is linux/amd64 and linux/arm64 on distroless/static, running as a
+    non-root user. Questions and bugs:
+    https://github.com/watchfor-io/prometheus-exporter/issues

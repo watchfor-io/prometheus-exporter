@@ -1,0 +1,34 @@
+# Two ways to get WatchFor metrics into Prometheus. Use one of them per
+# organization, not both, or every series is stored twice.
+
+global:
+  scrape_interval: 60s
+
+scrape_configs:
+  # 1. Directly from WatchFor, no exporter. Prometheus holds the API key.
+  #    The endpoint caches for 60 s and allows 30 requests per minute per
+  #    organization, so a 60 s interval is right; faster scrapes only see the
+  #    cached body. The series carry no organization label; add one here if
+  #    you scrape several organizations this way.
+  - job_name: watchfor
+    scheme: https
+    metrics_path: /api/v1/metrics
+    # params:                      # optional server-side filters
+    #   tag: [prod]
+    #   include_hosts: ["false"]
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/secrets/watchfor-api-key
+    scrape_interval: 60s
+    scrape_timeout: 30s
+    static_configs:
+      - targets: [watchfor.io]
+        labels:
+          organization: acme
+
+  # 2. Through the exporter. The exporter holds the key(s) and has already
+  #    added the organization label to every series.
+  - job_name: watchfor-exporter
+    scrape_interval: 60s
+    static_configs:
+      - targets: ["watchfor-exporter:10056"]
