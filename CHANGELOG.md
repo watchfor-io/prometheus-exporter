@@ -2,7 +2,7 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-10-01
 
 First release.
 
