@@ -21,6 +21,11 @@ First release.
   `watchfor_exporter_poll_errors_total{reason}` (auth, plan, rate_limited,
   http, network, parse) and `watchfor_exporter_build_info`.
 - `/healthz`, `/readyz`, graceful shutdown on SIGTERM.
+- Grafana dashboard `dashboards/watchfor-overview.json` (Grafana 11.6–13):
+  fleet health, status timeline, uptime against an SLO target, response
+  times, certificate and domain expiry, heartbeats and hosts. Works with
+  direct scraping and through the exporter; the Docker Compose example
+  provisions it automatically.
 - Configuration through flags, environment variables and a YAML file;
   `WATCHFOR_API_KEY` alone is enough to start. Keys can come from files
   (`api_key_file`), which are re-read on every poll.
