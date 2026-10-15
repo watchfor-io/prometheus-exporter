@@ -2,6 +2,16 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
+## 0.1.1 — 2026-10-15
+
+- **Built with Go 1.27.2.** 0.1.0 was compiled with Go 1.26.8, whose
+  `net/http` and HTTP/2 code has known vulnerabilities (GO-2026-6611,
+  GO-2026-6612, GO-2026-6613, GO-2026-6617). The exporter both serves
+  `/metrics` and polls the WatchFor API over HTTP, so every binary and
+  image is rebuilt; nothing else changes in behaviour.
+- Dependencies: `prometheus/client_golang` 1.25.0, `prometheus/common`
+  0.72.1.
+
 ## 0.1.0 — 2026-10-01
 
 First release.
