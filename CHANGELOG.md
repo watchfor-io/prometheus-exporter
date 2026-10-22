@@ -2,6 +2,15 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
+## Unreleased
+
+- **Built with Go 1.27.3.** Go 1.27.2's `crypto/x509` has GO-2026-6809,
+  reachable when the exporter verifies the WatchFor API's TLS certificate,
+  so every binary and image needs a rebuild; nothing else changes in
+  behaviour.
+- Runtime image: distroless `static-debian13:nonroot` refreshed to the
+  current digest.
+
 ## 0.1.1 — 2026-10-15
 
 - **Built with Go 1.27.2.** 0.1.0 was compiled with Go 1.26.8, whose
