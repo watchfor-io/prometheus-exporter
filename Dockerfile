@@ -25,7 +25,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -buildvcs=false \
 # distroless/static: no shell, no package manager, runs as uid 65532.
 # Nothing is written to disk, so the container runs with a read-only root
 # filesystem.
-FROM gcr.io/distroless/static-debian13:nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
+FROM gcr.io/distroless/static-debian13:nonroot@sha256:d62067879de890a1def9da0e7766b7d20810a5e5555cef8506b752437d7a3e88
 ARG VERSION=dev
 LABEL org.opencontainers.image.title="watchfor-prometheus-exporter" \
       org.opencontainers.image.description="Prometheus exporter for WatchFor uptime monitoring" \
