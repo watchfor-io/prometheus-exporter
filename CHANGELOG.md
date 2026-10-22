@@ -2,7 +2,7 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
-## Unreleased
+## 0.1.2 — 2026-10-22
 
 - **Built with Go 1.27.3.** Go 1.27.2's `crypto/x509` has GO-2026-6809,
   reachable when the exporter verifies the WatchFor API's TLS certificate,
