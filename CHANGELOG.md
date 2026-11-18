@@ -2,7 +2,7 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
-## Unreleased
+## 0.1.3 — 2026-11-18
 
 - **Built with Go 1.27.4.** Go 1.27.3's `net/http` has GO-2026-6859 (an
   HTTP/1 server crash through a `MaxBytesReader` header race), reachable
