@@ -2,6 +2,16 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
+## Unreleased
+
+- **Built with Go 1.27.4.** Go 1.27.3's `net/http` has GO-2026-6859 (an
+  HTTP/1 server crash through a `MaxBytesReader` header race), reachable
+  from the exporter's own `/metrics` server, so every binary and image
+  needs a rebuild; nothing else changes in behaviour.
+- Dependencies: `prometheus/common` 0.73.1, `go.yaml.in/yaml/v3` 3.0.6.
+- Runtime image: distroless `static-debian13:nonroot` refreshed to the
+  current digest.
+
 ## 0.1.2 — 2026-10-22
 
 - **Built with Go 1.27.3.** Go 1.27.2's `crypto/x509` has GO-2026-6809,
