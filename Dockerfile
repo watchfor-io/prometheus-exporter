@@ -7,7 +7,7 @@
 # Base images are pinned by digest; Dependabot proposes the bumps. The Go
 # image must match the toolchain line in go.mod (GOTOOLCHAIN=local).
 
-FROM --platform=$BUILDPLATFORM golang:1.27.3-alpine@sha256:d530cf60723abf1ffae0cd16bb546b379ec0550d2f3815e5b16ed69dbc00fba4 AS build
+FROM --platform=$BUILDPLATFORM golang:1.27.3-alpine@sha256:fa3d596898d9f126af7c01d14ee7597bab3f39cccf392ef36b69fe77cd681f18 AS build
 ARG TARGETOS
 ARG TARGETARCH
 ARG VERSION=dev
@@ -25,7 +25,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -buildvcs=false \
 # distroless/static: no shell, no package manager, runs as uid 65532.
 # Nothing is written to disk, so the container runs with a read-only root
 # filesystem.
-FROM gcr.io/distroless/static-debian13:nonroot@sha256:d62067879de890a1def9da0e7766b7d20810a5e5555cef8506b752437d7a3e88
+FROM gcr.io/distroless/static-debian13:nonroot@sha256:aafe993665bf6200db38a02c11a9351e782a84b6a45e7f33b6695638c88e3931
 ARG VERSION=dev
 LABEL org.opencontainers.image.title="watchfor-prometheus-exporter" \
       org.opencontainers.image.description="Prometheus exporter for WatchFor uptime monitoring" \
