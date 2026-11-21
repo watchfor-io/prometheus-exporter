@@ -18,6 +18,6 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pandatix/go-abnf v0.5.5 // indirect
-	github.com/prometheus/procfs v0.22.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
+	github.com/prometheus/procfs v0.23.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 )
