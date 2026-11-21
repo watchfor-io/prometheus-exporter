@@ -2,7 +2,7 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
-## Unreleased
+## 0.1.4 — 2026-11-21
 
 - Dependencies: `prometheus/common` 0.74.0, `prometheus/procfs` 0.23.0,
   `golang.org/x/sys` 0.50.0.
