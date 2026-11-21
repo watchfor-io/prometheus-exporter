@@ -2,6 +2,11 @@
 
 Releases are tagged `vX.Y.Z`. Dates are the day the tag was pushed.
 
+## Unreleased
+
+- Dependencies: `prometheus/common` 0.74.0, `prometheus/procfs` 0.23.0,
+  `golang.org/x/sys` 0.50.0.
+
 ## 0.1.3 — 2026-11-18
 
 - **Built with Go 1.27.4.** Go 1.27.3's `net/http` has GO-2026-6859 (an
